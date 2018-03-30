@@ -12,7 +12,6 @@ object QuickstartServer extends App with CreditCardRoutes {
 
   implicit val system: ActorSystem = ActorSystem("helloAkkaHttpServer")
   implicit val materializer: ActorMaterializer = ActorMaterializer()
-  val userRegistryActor: ActorRef = system.actorOf(UserRegistryActor.props, "userRegistryActor")
 
   Http().bindAndHandle(creditCardRoutes, "localhost", 8080)
 

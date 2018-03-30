@@ -1,21 +1,21 @@
 package uk.co.agilesoftware.domain
 
-import org.scalatest.{Matchers, WordSpec}
-import spray.json.{JsNumber, JsObject, JsString}
-import uk.co.agilesoftware.{JsonSupport, ValidationError, ValidationException}
+import org.scalatest.{ Matchers, WordSpec }
+import spray.json.{ JsNumber, JsObject, JsString }
+import uk.co.agilesoftware.{ ValidationError, ValidationException }
 
-import scala.util.{Failure, Success, Try}
+import scala.util.{ Failure, Success, Try }
 
-class ApplicantValidationSpec extends WordSpec with Matchers with JsonSupport {
+class ApplicantValidationSpec extends WordSpec with Matchers {
 
   private class ValidationErrorAssertions(applicant: => Applicant) {
     def shouldFailWith(errors: ValidationError*): Unit =
       Try(applicant) match {
-      case Failure(ex: ValidationException) => ex.errors should contain theSameElementsAs errors
+        case Failure(ex: ValidationException) => ex.errors should contain theSameElementsAs errors
 
-      case Success(_) => fail("should have failed with a Validation exception")
-      case Failure(ex) => fail(s"should have failed with a Validation exception; instead got $ex", ex)
-    }
+        case Success(_) => fail("should have failed with a Validation exception")
+        case Failure(ex) => fail(s"should have failed with a Validation exception; instead got $ex", ex)
+      }
   }
 
   private implicit def assertThat(applicant: => Applicant): ValidationErrorAssertions = new ValidationErrorAssertions(applicant)
@@ -109,8 +109,4 @@ class ApplicantValidationSpec extends WordSpec with Matchers with JsonSupport {
 
   }
 }
-
-
-
-
 

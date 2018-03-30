@@ -1,8 +1,8 @@
 package uk.co.agilesoftware
 
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.{ Matchers, WordSpec }
 
-import scala.util.{Failure, Try}
+import scala.util.{ Failure, Try }
 
 class ValidateSpec extends WordSpec with Matchers {
 
