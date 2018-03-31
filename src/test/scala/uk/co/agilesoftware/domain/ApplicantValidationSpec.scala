@@ -19,6 +19,7 @@ class ApplicantValidationSpec extends WordSpec with Matchers {
   }
 
   private implicit def assertThat(applicant: => Applicant): ValidationErrorAssertions = new ValidationErrorAssertions(applicant)
+
   private implicit def tupleToJsObject(values: (String, String, String, Any, String, Any)): JsObject = {
     def stringOrNumber(value: Any) = value match {
       case number: Int => JsNumber(number)

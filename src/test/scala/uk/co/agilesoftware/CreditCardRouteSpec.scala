@@ -1,14 +1,18 @@
 package uk.co.agilesoftware
 
-import akka.http.scaladsl.model.{ ContentTypes, HttpEntity, StatusCodes }
+import akka.http.scaladsl.model.{ContentTypes, HttpEntity, StatusCodes}
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.{ Matchers, WordSpec }
+import org.scalatest.{Matchers, WordSpec}
 import spray.json.DefaultJsonProtocol
 import uk.co.agilesoftware.domain.EmploymentStatus
+import uk.co.agilesoftware.service.CardService
 
 class CreditCardRouteSpec extends WordSpec with Matchers with ScalaFutures with ScalatestRouteTest with CreditCardRoutes {
+
+  override val cardService: CardService = CardService
+
   val httpEntity: (String) => HttpEntity.Strict = (str: String) => HttpEntity(ContentTypes.`application/json`, str)
 
   import DefaultJsonProtocol._
@@ -56,4 +60,5 @@ class CreditCardRouteSpec extends WordSpec with Matchers with ScalaFutures with 
       }
     }
   }
+
 }
