@@ -1,5 +1,6 @@
 package uk.co.agilesoftware.connector
 
+import uk.co.agilesoftware.Config
 import uk.co.agilesoftware.domain.Applicant
 
 trait CSCardsConnector extends CardsConnector {
@@ -14,5 +15,5 @@ trait CSCardsConnector extends CardsConnector {
 }
 
 object CSCardsConnector extends CSCardsConnector {
-  override val url: String = "http://y4xvbk1ki5.execute-api.us-west-2.amazonaws.com/CS/v1/cards"
+  override val url: String = Config.csCardsUrl
 }

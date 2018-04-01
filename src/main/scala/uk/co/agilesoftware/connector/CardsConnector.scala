@@ -28,9 +28,7 @@ trait CardsConnector {
     Http().singleRequest(getCardsRequest).flatMap { response =>
       response.status match {
         case StatusCodes.OK if response.entity.contentType == ContentTypes.`application/json` =>
-          Unmarshal(response.entity).to[String].map { responseJson =>
-            responseJson.parseJson.convertTo[Seq[Card]]
-          }
+          Unmarshal(response.entity).to[String].map { _.parseJson.convertTo[Seq[Card]] }
         case _ =>
           //Log dependency failure and mitigation
           Future.successful(Seq.empty[Card])

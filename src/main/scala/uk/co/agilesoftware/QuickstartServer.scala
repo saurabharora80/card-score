@@ -15,9 +15,9 @@ object QuickstartServer extends App with CreditCardRoutes {
   implicit val materializer: ActorMaterializer = ActorMaterializer()
   override val cardService = CardService
 
-  Http().bindAndHandle(creditCardRoutes, "localhost", 8080)
+  Http().bindAndHandle(creditCardRoutes, Config.host, Config.port)
 
-  println(s"Server online at http://localhost:8080/")
+  println(s"Server online at http://${Config.host}:${Config.port}/")
 
   Await.result(system.whenTerminated, Duration.Inf)
 
