@@ -22,3 +22,5 @@ lazy val root = (project in file(".")).
       "org.mockito" % "mockito-core" % "2.16.0" % Test
     )
   )
+
+enablePlugins(JavaAppPackaging)
