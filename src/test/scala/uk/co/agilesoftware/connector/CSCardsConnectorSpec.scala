@@ -62,6 +62,18 @@ class CSCardsConnectorSpec extends WordSpec with Matchers with WiremockSpec with
 
       whenReady(connector.getCards(Applicant("saurabh", "arora", "1980/07/03", 500, EmploymentStatus.STUDENT, 10000))) { _ shouldBe empty }
     }
+
+    "return an empty list if the connection times out" in {
+      import uk.co.agilesoftware.WiremockStub._
+      import scala.concurrent.duration._
+
+      implicit val delay: Duration = 7.seconds
+
+      given(post(urlPathEqualTo("/v1/cards")))
+        .returns(Seq(csCardsResponse("SuperSaver Card", "http://www.example.com/apply", 21.4, 6.3)))
+
+      whenReady(connector.getCards(Applicant("saurabh", "arora", "1980/07/03", 500, EmploymentStatus.STUDENT, 100000))) { _ shouldBe empty }
+    }
   }
 
   "request body" should {

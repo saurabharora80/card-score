@@ -4,6 +4,7 @@ import akka.http.scaladsl.model.StatusCode
 import com.github.tomakehurst.wiremock.client.MappingBuilder
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import scala.concurrent.duration._
 
 object WiremockStub {
   def scoredCardsResponse(cardname: String, url: String, apr: Double, eligibility: Double,
@@ -20,8 +21,8 @@ object WiremockStub {
     def failsWith(failureStatus: StatusCode): StubMapping =
       stubFor(builder.willReturn(aResponse().withStatus(failureStatus.intValue()).withHeader("Content-Type", "application/json")))
 
-    def returns(cards: Seq[String]): StubMapping =
-      stubFor(builder.willReturn(aResponse().withStatus(200)
+    def returns(cards: Seq[String])(implicit delay: Duration = 0.seconds): StubMapping =
+      stubFor(builder.willReturn(aResponse().withStatus(200).withFixedDelay(delay.toMillis.toInt)
         .withHeader("Content-Type", "application/json")
         .withBody(s"[${cards.mkString(",")}]")))
   }

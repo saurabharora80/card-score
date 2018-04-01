@@ -14,7 +14,7 @@ object CardReader {
         Card("CSCards", cardName, url, apr, eligibility)
       case Seq(JsString(cardName), JsString(url), JsNumber(apr), JsNumber(eligibility), JsArray(features)) =>
         Card("CSCards", cardName, url, apr, eligibility, features.map(_.convertTo[String]))
-      case _ => throw new InvalidResponseError("CSCards", json)
+      case _ => throw InvalidResponseError("CSCards", json)
     }
   }
 
@@ -26,7 +26,7 @@ object CardReader {
         Card("ScoredCards", cardName, url, apr, eligibility * 10, attributes.map(_.convertTo[String]))
       case Seq(JsString(cardName), JsString(url), JsNumber(apr), JsNumber(eligibility)) =>
         Card("ScoredCards", cardName, url, apr, eligibility * 10)
-      case _ => throw new InvalidResponseError("ScoredCards", json)
+      case _ => throw InvalidResponseError("ScoredCards", json)
     }
   }
 }

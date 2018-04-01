@@ -2,13 +2,14 @@ package uk.co.agilesoftware.connector
 
 import akka.event.Logging
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.model.{HttpEntity, _}
+import akka.http.scaladsl.model.{ HttpEntity, _ }
 import akka.http.scaladsl.unmarshalling.Unmarshal
+import akka.stream.scaladsl.TcpIdleTimeoutException
 import spray.json._
 import uk.co.agilesoftware.Singletons
-import uk.co.agilesoftware.domain.{Applicant, Card}
+import uk.co.agilesoftware.domain.{ Applicant, Card }
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 trait CardsConnector {
   import Singletons._
@@ -40,6 +41,9 @@ trait CardsConnector {
     }.recover {
       case ex: InvalidResponseError =>
         logger.warning(s"${request.method.value}:${request.uri} >> Unable to parse json: ${ex.json.compactPrint}. [Returning empty card list]")
+        Seq.empty[Card]
+      case ex: TcpIdleTimeoutException =>
+        logger.warning(s"${request.method.value}:${request.uri} >> ${ex.getMessage}. [Returning empty card list]")
         Seq.empty[Card]
     }
   }

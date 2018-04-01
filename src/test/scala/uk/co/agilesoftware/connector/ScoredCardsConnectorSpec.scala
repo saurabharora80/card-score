@@ -62,6 +62,18 @@ class ScoredCardsConnectorSpec extends WordSpec with Matchers with WiremockSpec 
 
       whenReady(connector.getCards(Applicant("saurabh", "arora", "1980/07/03", 500, EmploymentStatus.STUDENT, 10000))) { _ shouldBe empty }
     }
+
+    "return an empty list if the connection times out" in {
+      import uk.co.agilesoftware.WiremockStub._
+      import scala.concurrent.duration._
+
+      implicit val delay: Duration = 7.seconds
+
+      given(post(urlPathEqualTo("/v2/creditcards")))
+        .returns(Seq(scoredCardsResponse("ScoredCard Builder", "http://www.example.com/apply", 21.4, 0.8)))
+
+      whenReady(connector.getCards(Applicant("saurabh", "arora", "1980/07/03", 500, EmploymentStatus.STUDENT, 100000))) { _ shouldBe empty }
+    }
   }
 
   "request body" should {
