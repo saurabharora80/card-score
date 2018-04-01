@@ -4,9 +4,9 @@ import uk.co.agilesoftware.domain.Applicant
 
 trait ScoredCardsConnector extends CardsConnector {
 
-  implicit override val cardReader = CardReader.scoredCardReader
+  implicit override protected val cardReader = CardReader.scoredCardReader
 
-  override def requestBody(applicant: Applicant): String =
+  override private[connector] def requestBody(applicant: Applicant): String =
     s"""{"first-name": "${applicant.firstname}",
        |"last-name": "${applicant.lastname}",
        |"date-of-birth": "${applicant.dob}",

@@ -18,7 +18,7 @@ trait CardsConnector {
 
   implicit protected def cardReader: JsonReader[Card]
   protected def url: String
-  protected def requestBody(applicant: Applicant): String
+  private[connector] def requestBody(applicant: Applicant): String
 
   def getCards(applicant: Applicant)(implicit ec: ExecutionContext, actorSystem: ActorSystem, materializer: ActorMaterializer): Future[Seq[Card]] = {
 
