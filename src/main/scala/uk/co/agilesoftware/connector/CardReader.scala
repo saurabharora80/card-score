@@ -1,7 +1,9 @@
 package uk.co.agilesoftware.connector
 
 import spray.json.{ JsArray, JsNumber, JsString, JsValue, RootJsonReader }
-import uk.co.agilesoftware.domain.{ Card, InvalidResponseError }
+import uk.co.agilesoftware.domain.Card
+
+case class InvalidResponseError(cardType: String, json: JsValue) extends RuntimeException(s"Unable to parse json for $cardType: ${json.prettyPrint}")
 
 object CardReader {
   import spray.json.DefaultJsonProtocol._

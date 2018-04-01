@@ -1,7 +1,5 @@
 package uk.co.agilesoftware.service
 
-import akka.actor.ActorSystem
-import akka.stream.ActorMaterializer
 import uk.co.agilesoftware.connector.{ CSCardsConnector, CardsConnector, ScoredCardsConnector }
 import uk.co.agilesoftware.domain.{ Applicant, Card }
 
@@ -11,7 +9,7 @@ trait CardService {
   protected def cscardsConnector: CardsConnector
   protected def scoredCardsConnector: CardsConnector
 
-  def getCards(applicant: Applicant)(implicit ec: ExecutionContext, actorSystem: ActorSystem, materializer: ActorMaterializer): Future[Seq[Card]] = {
+  def getCards(applicant: Applicant)(implicit ec: ExecutionContext): Future[Seq[Card]] = {
     //Initialise the futures outside 'for' comprehension to allow parallel execution
     val eventualCSCards = cscardsConnector.getCards(applicant)
     val eventualScoredCards = scoredCardsConnector.getCards(applicant)

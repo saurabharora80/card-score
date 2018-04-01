@@ -1,20 +1,16 @@
 package uk.co.agilesoftware.route
 
-import akka.actor.ActorSystem
 import akka.event.Logging
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
-import akka.stream.ActorMaterializer
 import akka.util.Timeout
 import uk.co.agilesoftware.service.CardService
-import uk.co.agilesoftware.domain
+import uk.co.agilesoftware.{ Singletons, domain }
 
 import scala.concurrent.duration._
 
 trait CreditCardRoutes extends DefaultRejectionHandler {
-  implicit def system: ActorSystem
-  implicit def materializer: ActorMaterializer
-  private implicit lazy val executionContext = system.dispatcher
+  import Singletons._
 
   lazy val log = Logging(system, classOf[CreditCardRoutes])
 

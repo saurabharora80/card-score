@@ -1,16 +1,22 @@
 package uk.co.agilesoftware.connector
 
-import akka.actor.ActorSystem
+import akka.event.Logging
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.unmarshalling.Unmarshal
-import akka.stream.ActorMaterializer
 import spray.json._
-import uk.co.agilesoftware.domain.{ Applicant, Card, InvalidResponseError }
+import uk.co.agilesoftware.Singletons
+import uk.co.agilesoftware.domain.{ Applicant, Card }
 
 import scala.concurrent.{ ExecutionContext, Future }
 
 trait CardsConnector {
+  import Singletons._
+
+  private val http = Http()
+
+  private lazy val logger = Logging(system, classOf[CardsConnector])
+
   private implicit val cardsReader: RootJsonReader[Seq[Card]] = {
     case JsArray(jsValues) => jsValues.map(cardReader.read(_))
     case json => throw new RuntimeException(s"Unable to read Cards response: $json")
@@ -20,22 +26,23 @@ trait CardsConnector {
   protected def url: String
   private[connector] def requestBody(applicant: Applicant): String
 
-  def getCards(applicant: Applicant)(implicit ec: ExecutionContext, actorSystem: ActorSystem, materializer: ActorMaterializer): Future[Seq[Card]] = {
+  def getCards(applicant: Applicant)(implicit ec: ExecutionContext): Future[Seq[Card]] = {
 
-    lazy val getCardsRequest = HttpRequest(method = HttpMethods.POST, uri = url,
+    lazy val request = HttpRequest(method = HttpMethods.POST, uri = url,
       entity = HttpEntity(ContentTypes.`application/json`, requestBody(applicant)))
 
-    Http().singleRequest(getCardsRequest).flatMap { response =>
+    http.singleRequest(request).flatMap { response =>
       response.status match {
         case StatusCodes.OK if response.entity.contentType == ContentTypes.`application/json` =>
           Unmarshal(response.entity).to[String].map { _.parseJson.convertTo[Seq[Card]] }
         case _ =>
-          //Log dependency failure and mitigation
+          logger.warning(s"${request.method.value}:${request.uri} >> Failed with status: ${response.status} " +
+            s"and content type ${response.entity.contentType}. [Returning empty card list]")
           Future.successful(Seq.empty[Card])
       }
     }.recover {
-      case _: InvalidResponseError =>
-        //Log parsing error and mitigation
+      case ex: InvalidResponseError =>
+        logger.warning(s"${request.method.value}:${request.uri} >> Unable to parse json: ${ex.json.compactPrint}. [Returning empty card list]")
         Seq.empty[Card]
     }
   }

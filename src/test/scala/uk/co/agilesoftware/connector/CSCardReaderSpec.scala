@@ -2,7 +2,7 @@ package uk.co.agilesoftware.connector
 
 import org.scalatest.{ Matchers, WordSpec }
 import spray.json.{ JsArray, JsNumber, JsObject, JsString }
-import uk.co.agilesoftware.domain.{ Card, InvalidResponseError }
+import uk.co.agilesoftware.domain.Card
 
 class CSCardReaderSpec extends WordSpec with Matchers {
 

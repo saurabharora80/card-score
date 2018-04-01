@@ -1,7 +1,5 @@
 package uk.co.agilesoftware.domain
 
-import spray.json.JsValue
-
 import scala.math.BigDecimal.RoundingMode
 
 case class Card(provider: String, cardName: String, url: String, apr: BigDecimal, eligibility: BigDecimal, features: Seq[String] = Seq.empty) {
@@ -14,6 +12,4 @@ object Card {
     override def compare(c1: Card, c2: Card): Int = c2.cardScore compare c1.cardScore
   }
 }
-
-class InvalidResponseError(cardType: String, json: JsValue) extends RuntimeException(s"Unable to parse json for $cardType: ${json.prettyPrint}")
 
