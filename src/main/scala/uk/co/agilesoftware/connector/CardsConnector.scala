@@ -2,13 +2,13 @@ package uk.co.agilesoftware.connector
 
 import akka.event.Logging
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.model._
+import akka.http.scaladsl.model.{HttpEntity, _}
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import spray.json._
 import uk.co.agilesoftware.Singletons
-import uk.co.agilesoftware.domain.{ Applicant, Card }
+import uk.co.agilesoftware.domain.{Applicant, Card}
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 trait CardsConnector {
   import Singletons._
@@ -31,15 +31,12 @@ trait CardsConnector {
     lazy val request = HttpRequest(method = HttpMethods.POST, uri = url,
       entity = HttpEntity(ContentTypes.`application/json`, requestBody(applicant)))
 
-    http.singleRequest(request).flatMap { response =>
-      response.status match {
-        case StatusCodes.OK if response.entity.contentType == ContentTypes.`application/json` =>
-          Unmarshal(response.entity).to[String].map { _.parseJson.convertTo[Seq[Card]] }
-        case _ =>
-          logger.warning(s"${request.method.value}:${request.uri} >> Failed with status: ${response.status} " +
-            s"and content type ${response.entity.contentType}. [Returning empty card list]")
-          Future.successful(Seq.empty[Card])
-      }
+    http.singleRequest(request).flatMap {
+      case HttpResponse(StatusCodes.OK, _, entity, _) if entity.contentType == ContentTypes.`application/json` =>
+        Unmarshal(entity).to[String].map { _.parseJson.convertTo[Seq[Card]] }
+      case HttpResponse(code, _, entity, _) =>
+        logger.warning(s"${request.method.value}:${request.uri} >> Failed with status: $code and content type ${entity.contentType}. [Returning empty card list]")
+        Future.successful(Seq.empty[Card])
     }.recover {
       case ex: InvalidResponseError =>
         logger.warning(s"${request.method.value}:${request.uri} >> Unable to parse json: ${ex.json.compactPrint}. [Returning empty card list]")
