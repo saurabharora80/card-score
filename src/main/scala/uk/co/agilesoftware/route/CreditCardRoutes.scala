@@ -1,4 +1,4 @@
-package uk.co.agilesoftware
+package uk.co.agilesoftware.route
 
 import akka.actor.ActorSystem
 import akka.event.Logging
@@ -6,6 +6,7 @@ import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.util.Timeout
 import uk.co.agilesoftware.service.CardService
+import uk.co.agilesoftware.domain
 
 import scala.concurrent.duration._
 

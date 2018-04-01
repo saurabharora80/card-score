@@ -1,4 +1,4 @@
-package uk.co.agilesoftware
+package uk.co.agilesoftware.route
 
 import scala.util.{ Failure, Success, Try }
 

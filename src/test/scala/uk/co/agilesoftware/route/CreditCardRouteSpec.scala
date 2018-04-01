@@ -1,4 +1,4 @@
-package uk.co.agilesoftware
+package uk.co.agilesoftware.route
 
 import akka.http.scaladsl.model.{ ContentTypes, HttpEntity, StatusCodes }
 import akka.http.scaladsl.server.Route
