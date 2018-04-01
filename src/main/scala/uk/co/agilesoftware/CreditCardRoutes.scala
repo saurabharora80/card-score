@@ -5,8 +5,6 @@ import akka.event.Logging
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.util.Timeout
-import spray.json.DefaultJsonProtocol._
-import uk.co.agilesoftware.domain.Card
 import uk.co.agilesoftware.service.CardService
 
 import scala.concurrent.duration._
@@ -21,7 +19,7 @@ trait CreditCardRoutes extends DefaultRejectionHandler {
 
   val cardService: CardService
 
-  implicit val cardFormat = Card.scoredCardsFormat
+  import JsonWriters._
 
   lazy val creditCardRoutes: Route = path("creditcards") {
     (post & entity(as[domain.Applicant])) { applicant =>

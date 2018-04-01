@@ -7,7 +7,7 @@ import com.github.tomakehurst.wiremock.stubbing.StubMapping
 
 object WiremockStub {
   def scoredCardsResponse(cardname: String, url: String, apr: Double, eligibility: Double,
-                          attributes: Seq[String] = Seq.empty, offers: Seq[String] = Seq.empty): String =
+    attributes: Seq[String] = Seq.empty, offers: Seq[String] = Seq.empty): String =
     s"""{"card": "$cardname", "apply-url": "$url", "annual-percentage-rate": $apr, "approval-rating": $eligibility,
        |"attributes": [${attributes.map(f => s""" "$f" """).mkString(",")}],
        |"introductory-offers": [${offers.map(f => s""" "$f" """).mkString(",")}]}""".stripMargin

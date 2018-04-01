@@ -17,8 +17,11 @@ trait CardsConnector {
 
   protected def url: String
 
-  import spray.json.DefaultJsonProtocol._
-  implicit protected def cardReader: RootJsonFormat[Card]
+  implicit val cardsReader: RootJsonReader[Seq[Card]] = {
+    case JsArray(jsValues) => jsValues.map(cardReader.read(_))
+  }
+
+  implicit protected def cardReader: JsonReader[Card]
 
   protected def requestBody(applicant: Applicant): String
 

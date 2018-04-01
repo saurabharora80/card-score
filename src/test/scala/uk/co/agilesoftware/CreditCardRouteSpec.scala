@@ -1,13 +1,13 @@
 package uk.co.agilesoftware
 
-import akka.http.scaladsl.model.{ContentTypes, HttpEntity, StatusCodes}
+import akka.http.scaladsl.model.{ ContentTypes, HttpEntity, StatusCodes }
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.testkit.ScalatestRouteTest
-import com.github.tomakehurst.wiremock.client.WireMock.{post, urlPathEqualTo}
+import com.github.tomakehurst.wiremock.client.WireMock.{ post, urlPathEqualTo }
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.{Matchers, WordSpec}
-import spray.json.{DefaultJsonProtocol, JsArray, JsNumber, JsObject, JsString, JsValue}
-import uk.co.agilesoftware.connector.{CSCardsConnector, CardsConnector, ScoredCardsConnector, WiremockSpec}
+import org.scalatest.{ Matchers, WordSpec }
+import spray.json.{ DefaultJsonProtocol, JsArray, JsNumber, JsObject, JsString, JsValue }
+import uk.co.agilesoftware.connector.{ CSCardsConnector, CardsConnector, ScoredCardsConnector, WiremockSpec }
 import uk.co.agilesoftware.domain.EmploymentStatus
 import uk.co.agilesoftware.service.CardService
 
@@ -86,13 +86,12 @@ class CreditCardRouteSpec extends WordSpec with Matchers with ScalaFutures with 
         .returns(Seq(scoredCardsResponse("ScoredCard Builder", "http://www.example.com/apply", 19.4, 0.8, Seq("Supports ApplePay"),
           Seq("Interest free purchases for 1 month"))))
 
-
       val applicantJson = s"""{"firstname": "saurabh","lastname": "arora","dob": "1980/07/03","credit-score": 500,
            |"employment-status": "FULL_TIME","salary": 10000}""".stripMargin
 
       import spray.json._
 
-      implicit def wrapJsValue(jsValue: JsValue) = JsonVerification(jsValue)
+      implicit def wrapJsValue(jsValue: JsValue) = CardResponseVerification(jsValue)
 
       Post("/creditcards").withEntity(httpEntity(applicantJson)) ~> Route.seal(creditCardRoutes) ~> check {
         status shouldBe StatusCodes.OK
@@ -119,7 +118,7 @@ class CreditCardRouteSpec extends WordSpec with Matchers with ScalaFutures with 
     }
   }
 
-  private case class JsonVerification(jsValue: JsValue) {
+  private case class CardResponseVerification(jsValue: JsValue) {
     def contains(card: String, name: String, url: String, apr: Double, cardscore: Double, features: String*): Unit = {
       jsValue.asJsObject shouldBe
         JsObject(
