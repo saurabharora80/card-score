@@ -5,16 +5,12 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.ActorMaterializer
-import uk.co.agilesoftware.domain.{Applicant, Card, InvalidResponseError}
 import spray.json._
+import uk.co.agilesoftware.domain.{ Applicant, Card, InvalidResponseError }
 
-import scala.concurrent.{ExecutionContextExecutor, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 trait CardsConnector {
-  private implicit def system: ActorSystem = ActorSystem()
-  private implicit def materializer: ActorMaterializer = ActorMaterializer()
-  private implicit lazy val executionContext: ExecutionContextExecutor = system.dispatcher
-
   private implicit val cardsReader: RootJsonReader[Seq[Card]] = {
     case JsArray(jsValues) => jsValues.map(cardReader.read(_))
     case json => throw new RuntimeException(s"Unable to read Cards response: $json")
@@ -24,7 +20,7 @@ trait CardsConnector {
   protected def url: String
   protected def requestBody(applicant: Applicant): String
 
-  def getCards(applicant: Applicant): Future[Seq[Card]] = {
+  def getCards(applicant: Applicant)(implicit ec: ExecutionContext, actorSystem: ActorSystem, materializer: ActorMaterializer): Future[Seq[Card]] = {
 
     lazy val getCardsRequest = HttpRequest(method = HttpMethods.POST, uri = url,
       entity = HttpEntity(ContentTypes.`application/json`, requestBody(applicant)))
