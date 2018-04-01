@@ -5,8 +5,9 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.ActorMaterializer
-import uk.co.agilesoftware.domain.{Applicant, Card}
+import uk.co.agilesoftware.domain.{ Applicant, Card, InvalidResponseError }
 import spray.json._
+
 import scala.concurrent.Future
 
 trait CardsConnector {
@@ -32,10 +33,15 @@ trait CardsConnector {
           Unmarshal(response.entity).to[String].map { responseJson =>
             responseJson.parseJson.convertTo[Seq[Card]]
           }
-        case status => throw new RuntimeException(s"${getCardsRequest.method}:${getCardsRequest.uri} failed with Status: $status and Content-Type: ${response.entity.contentType}")
+        case _ =>
+          //Log dependency failure and mitigation
+          Future.successful(Seq.empty[Card])
       }
+    }.recover {
+      case ex: InvalidResponseError =>
+        //Log parsing error and mitigation
+        Seq.empty[Card]
     }
   }
 }
-
 
