@@ -1,8 +1,6 @@
 package uk.co.agilesoftware.connector
 
-import akka.actor.ActorSystem
 import akka.http.scaladsl.model.StatusCodes
-import akka.stream.ActorMaterializer
 import com.github.tomakehurst.wiremock.client.WireMock._
 import org.scalatest.concurrent.{ IntegrationPatience, ScalaFutures }
 import org.scalatest.{ Matchers, WordSpec }
@@ -10,9 +8,7 @@ import uk.co.agilesoftware.domain.{ Applicant, Card, EmploymentStatus }
 
 class CSCardsConnectorSpec extends WordSpec with Matchers with WiremockSpec with ScalaFutures with IntegrationPatience {
 
-  implicit val system: ActorSystem = TestSingletons.system
-  implicit val materializer: ActorMaterializer = TestSingletons.materializer
-  private implicit val executionContext = system.dispatcher
+  import uk.co.agilesoftware.TestSingletons._
 
   private val connector = new CSCardsConnector {
     override implicit def url: String = s"$wiremockUrl/v1/cards"

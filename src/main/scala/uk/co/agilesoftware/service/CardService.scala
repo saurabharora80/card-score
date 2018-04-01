@@ -8,8 +8,8 @@ import uk.co.agilesoftware.domain.{ Applicant, Card }
 import scala.concurrent.{ ExecutionContext, Future }
 
 trait CardService {
-  def cscardsConnector: CardsConnector
-  def scoredCardsConnector: CardsConnector
+  protected def cscardsConnector: CardsConnector
+  protected def scoredCardsConnector: CardsConnector
 
   def getCards(applicant: Applicant)(implicit ec: ExecutionContext, actorSystem: ActorSystem, materializer: ActorMaterializer): Future[Seq[Card]] = {
     //Initialise the futures outside 'for' comprehension to allow parallel execution
@@ -23,6 +23,6 @@ trait CardService {
 }
 
 object CardService extends CardService {
-  override val cscardsConnector: CardsConnector = CSCardsConnector
-  override val scoredCardsConnector: CardsConnector = ScoredCardsConnector
+  override protected val cscardsConnector: CardsConnector = CSCardsConnector
+  override protected val scoredCardsConnector: CardsConnector = ScoredCardsConnector
 }
