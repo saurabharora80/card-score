@@ -7,7 +7,8 @@ import com.github.tomakehurst.wiremock.client.WireMock.{ post, urlPathEqualTo }
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{ Matchers, WordSpec }
 import spray.json.{ DefaultJsonProtocol, JsArray, JsNumber, JsObject, JsString, JsValue }
-import uk.co.agilesoftware.connector.{ CSCardsConnector, CardsConnector, ScoredCardsConnector, WiremockSpec }
+import uk.co.agilesoftware.WiremockSpec
+import uk.co.agilesoftware.connector.{ CSCardsConnector, CardsConnector, ScoredCardsConnector }
 import uk.co.agilesoftware.domain.EmploymentStatus
 import uk.co.agilesoftware.service.CardService
 

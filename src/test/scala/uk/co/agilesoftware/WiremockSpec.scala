@@ -1,4 +1,4 @@
-package uk.co.agilesoftware.connector
+package uk.co.agilesoftware
 
 import akka.testkit.SocketUtil
 import com.github.tomakehurst.wiremock.WireMockServer

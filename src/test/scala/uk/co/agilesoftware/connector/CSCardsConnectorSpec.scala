@@ -4,6 +4,7 @@ import akka.http.scaladsl.model.StatusCodes
 import com.github.tomakehurst.wiremock.client.WireMock._
 import org.scalatest.concurrent.{ IntegrationPatience, ScalaFutures }
 import org.scalatest.{ Matchers, WordSpec }
+import uk.co.agilesoftware.WiremockSpec
 import uk.co.agilesoftware.domain.{ Applicant, Card, EmploymentStatus }
 
 class CSCardsConnectorSpec extends WordSpec with Matchers with WiremockSpec with ScalaFutures with IntegrationPatience {
